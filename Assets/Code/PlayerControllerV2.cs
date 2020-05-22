@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Code;
 using UnityEngine;
 
@@ -11,13 +9,13 @@ public class PlayerControllerV2 : MonoBehaviour
     public float MaxSpeedRadius = 5;
     public float StopRadius = 0.1f;
     public GameObject Bullet;
-    private BulletController m_Bullet;
+    private BulletController m_BulletController;
     private Vector3 m_LookTarget;
-    private List<Collision> m_Collisions = new List<Collision>();
+    private int m_Collisions = 0;
     private Camera m_Camera;
 
     public bool UsePhysicsMovement
-        => m_Collisions.Any();
+        => m_Collisions > 0;
 
     private Vector3 m_MoveVector = Vector3.zero;
     
@@ -27,8 +25,7 @@ public class PlayerControllerV2 : MonoBehaviour
     
     void Start()
     {
-        // Application.targetFrameRate = 90;
-        m_Bullet = Bullet.GetComponent<BulletController>();
+        m_BulletController = Bullet.GetComponent<BulletController>();
         m_Rigidbody = GetComponent<Rigidbody>();
         m_Camera = Camera.main;
         m_LevelController = FindObjectOfType<LevelController>();
@@ -37,9 +34,16 @@ public class PlayerControllerV2 : MonoBehaviour
     void Update()
     {
         LookAtMouse();
-        
-        if (!Input.GetKey(KeyCode.Space))
+
+        if (Input.GetKey(KeyCode.Space))
+        {
+            m_MoveVector = Vector3.zero;
+            m_Rigidbody.velocity = Vector3.zero;
+        }
+        else
+        {
             Move();
+        }
         
         if(Input.GetMouseButton(0))
             Fire();
@@ -55,11 +59,11 @@ public class PlayerControllerV2 : MonoBehaviour
 
     private void Fire()
     {
-        if (m_Bullet.IsAvailable)
+        if (m_BulletController.IsAvailable)
         {
             Bullet.transform.position = transform.position + transform.forward;
             Bullet.transform.rotation = transform.rotation;
-            m_Bullet.Fire();
+            m_BulletController.Fire();
         }
     }
 
@@ -95,9 +99,15 @@ public class PlayerControllerV2 : MonoBehaviour
             m_Rigidbody.MovePosition(transform.position + m_MoveVector);  
     }
 
+    public void ResetState()
+    {
+        m_Collisions = 0;
+    }
+
     public void OnReceiveDamage()
     {
         Debug.Log("Player Dead");
+        ResetState();
         m_LevelController.ResetLevel();
     }
     
@@ -109,11 +119,11 @@ public class PlayerControllerV2 : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        m_Collisions.Add(other);
+        m_Collisions++;
     }
 
     private void OnCollisionExit(Collision other)
     {
-        m_Collisions.Remove(other);
+        m_Collisions--;
     }
 }
