@@ -1,8 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Profiling;
 using Random = UnityEngine.Random;
 
 
@@ -10,8 +10,6 @@ namespace Code
 {
     public class LevelController: MonoBehaviour
     {
-        public static bool IsLevelReady;
-
         public int MapWidth = 50;
         public int MapHeight = 50;
         public int PercentWalls = 25;
@@ -19,7 +17,7 @@ namespace Code
         public GameObject EnemyPrefab;
         public GameObject StartPlate;
         public int EnemyCount = 10;
-        private static int[,] Map;
+        public static int[,] Map;
 
         private static bool m_FoundPathInThisFrame;
 
@@ -37,7 +35,8 @@ namespace Code
 
         public void ResetLevel()
         {
-            IsLevelReady = false;
+            StopAllCoroutines();
+            
             if (m_Walls == null)
             {
                 var maxWallsCount = MapWidth * MapHeight;
@@ -110,18 +109,27 @@ namespace Code
                 }
             }
 
-            IsLevelReady = true;
+            StartCoroutine(UpdateRandomEnemyPath());
         }
-
 
         public static Vector3 GetRandomFreePoint()
         {
             return m_FreePoints[Random.Range(0, m_FreePoints.Count)];
         }
 
-        private void LateUpdate()
+        // Если осталось мало противников, то может быть сложно их найти. Поэтому они сами нас найдут. 
+        private IEnumerator UpdateRandomEnemyPath()
         {
-            m_FoundPathInThisFrame = false;
+            while (true)
+            {
+                yield return new WaitForSecondsRealtime(10);
+                var activeEnemy = m_Enemies.First(x => x.activeInHierarchy)?.GetComponent<EnemyController>();
+                if (activeEnemy != null)
+                    activeEnemy.Path = AStarPathFinder.FindPath(
+                        activeEnemy.gameObject.transform.position,
+                        m_Player.transform.position);
+            }
         }
+
     }
 }
