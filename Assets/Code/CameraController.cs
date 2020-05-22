@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour
+public class CameraController : Controller
 {
     private GameObject m_Player;
     private Camera m_Camera;
@@ -17,7 +17,7 @@ public class CameraController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Tick()
     {
         var screenPoint = m_Camera.WorldToScreenPoint(m_Player.transform.position);
         screenPoint.x = Math.Abs(screenPoint.x - Screen.width / 2);

@@ -2,7 +2,7 @@
 using Code;
 using UnityEngine;
 
-public class PlayerControllerV2 : MonoBehaviour
+public class PlayerControllerV2 : Controller
 {
     
     public float MoveSpeed = 1;
@@ -31,7 +31,7 @@ public class PlayerControllerV2 : MonoBehaviour
         m_LevelController = FindObjectOfType<LevelController>();
     }
 
-    void Update()
+    public override void Tick()
     {
         LookAtMouse();
 
@@ -52,7 +52,7 @@ public class PlayerControllerV2 : MonoBehaviour
             OnReceiveDamage();
     }
 
-    private void FixedUpdate()
+    public override  void PhysicsTick()
     {
         MoveWithCollisions();
     }

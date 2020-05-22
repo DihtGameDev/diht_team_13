@@ -6,7 +6,7 @@ using System.Collections.Generic;
 /// <summary>
 /// source https://www.youtube.com/watch?v=xkcCWqifT9M
 /// </summary>
-public class FieldOfView : MonoBehaviour {
+public class FieldOfView : Controller {
 
 	public float viewRadius;
 	[Range(0,360)]
@@ -43,7 +43,7 @@ public class FieldOfView : MonoBehaviour {
 		}
 	}
 
-	void LateUpdate() {
+	public override void LateTick() {
 		DrawFieldOfView ();
 	}
 

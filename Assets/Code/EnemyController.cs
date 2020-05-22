@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : Controller
 {
     public float Speed = 1;
     private GameObject m_Player;
@@ -17,7 +17,7 @@ public class EnemyController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Tick()
     {
         if (CanSeePlayer())
             Path = new List<Vector3>{m_Player.transform.position};
@@ -35,7 +35,7 @@ public class EnemyController : MonoBehaviour
         }
     }
     
-    private void FixedUpdate()
+    public override  void PhysicsTick()
     {
         if (Path != null && Path.Count > 0)
             MoveToPosition(Path[0]);

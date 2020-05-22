@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletController : MonoBehaviour
+public class BulletController : Controller
 {
     public int MaxRicochetCount = 1;
     private int m_Ricochet;
@@ -27,17 +27,18 @@ public class BulletController : MonoBehaviour
         IsAvailable = false;
     }
 
-    private void ResetState()
+    public void ResetState()
     {
         m_Ricochet = 0;
         IsAvailable = true;
         m_LifeTimeLeft = LifeTime;
-        m_Rigidbody.velocity = Vector3.zero;
+        if (m_Rigidbody != null) 
+            m_Rigidbody.velocity = Vector3.zero;
         gameObject.SetActive(false);
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Tick()
     {
         transform.position += transform.forward * Time.fixedDeltaTime * Speed;
 

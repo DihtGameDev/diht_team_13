@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace Code
 {
-    public class LevelController: MonoBehaviour
+    public class LevelController: Controller
     {
         public int MapWidth = 50;
         public int MapHeight = 50;
@@ -17,14 +17,11 @@ namespace Code
         public GameObject EnemyPrefab;
         public GameObject StartPlate;
         public int EnemyCount = 10;
+        
         public static int[,] Map;
-
-        private static bool m_FoundPathInThisFrame;
-
         private static List<Vector3> m_FreePoints = new List<Vector3>();
         private List<GameObject> m_Enemies;
         private List<GameObject> m_Walls;
-
         private GameObject m_Player;
 
         void Start()
@@ -74,9 +71,9 @@ namespace Code
             var walls = m_Walls.GetEnumerator();
             walls.MoveNext();
             Map = new MapGenerator(MapWidth, MapHeight, PercentWalls).Map;
-            for (var x = 0; x < 50; x++)
+            for (var x = 0; x < MapWidth; x++)
             {
-                for (var z = 0; z < 50; z++)
+                for (var z = 0; z < MapHeight; z++)
                 {
                     if (Map[x, z] == 1)
                     {
