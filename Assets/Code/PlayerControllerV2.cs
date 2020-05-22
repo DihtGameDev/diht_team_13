@@ -35,7 +35,7 @@ public class PlayerControllerV2 : MonoBehaviour
     {
         LookAtMouse();
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyboardAccess.StopMoveKey))
         {
             m_MoveVector = Vector3.zero;
             m_Rigidbody.velocity = Vector3.zero;
@@ -48,7 +48,7 @@ public class PlayerControllerV2 : MonoBehaviour
         if(Input.GetMouseButton(0))
             Fire();
         
-        if(Input.GetKeyDown(KeyCode.R))
+        if(Input.GetKeyDown(KeyboardAccess.RestartKey))
             OnReceiveDamage();
     }
 
@@ -101,6 +101,7 @@ public class PlayerControllerV2 : MonoBehaviour
 
     public void ResetState()
     {
+        m_BulletController.ResetState();
         m_Collisions = 0;
     }
 
